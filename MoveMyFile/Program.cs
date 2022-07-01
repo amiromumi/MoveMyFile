@@ -12,182 +12,184 @@ namespace MoveMyFile
     {
         static void Main(string[] args)
         {
+            string userNameWindows = Environment.UserName;
 
-            //try
-            //{
-            while (true)
+            try
             {
-                string pathDesktop = "C:\\Users\\" + "User" + "\\" + "Desktop";
-                int countPathDesktop = pathDesktop.Length;
-                List<string> filesDesktop = Directory.GetFiles(pathDesktop).ToList();
-                List<string> filesFolder;
-                int countPathFilesFolder = (pathDesktop + "\\" + "Files").Length;
-
-                if (Directory.Exists(pathDesktop + "\\" + "Files"))
+                while (true)
                 {
-                    filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
-                    MoveFiles();
-                }
-                else
-                {
-                    Directory.CreateDirectory(pathDesktop + "\\" + "Files");
-                    filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
-                    MoveFiles();
-                }
+                    string pathDesktop = "C:\\Users\\" + userNameWindows + "\\" + "Desktop";
+                    int countPathDesktop = pathDesktop.Length;
+                    List<string> filesDesktop = Directory.GetFiles(pathDesktop).ToList();
+                    List<string> filesFolder;
+                    int countPathFilesFolder = (pathDesktop + "\\" + "Files").Length;
 
-                void MoveFiles()
-                {
-                    List<string> filesDesktopOld = new List<string>();
-
-                    //لیست فایل های جدید هم نام در دسکتاپ
-                    List<string> dsNewList = new List<string>();
-
-                    foreach (var ds in filesDesktop)
+                    if (Directory.Exists(pathDesktop + "\\" + "Files"))
                     {
-                        filesDesktopOld.Add(ds);
-                        dsNewList.Add(ds);
-                        foreach (var fs in filesFolder)
+                        filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
+                        MoveFiles();
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(pathDesktop + "\\" + "Files");
+                        filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
+                        MoveFiles();
+                    }
+
+                    void MoveFiles()
+                    {
+                        List<string> filesDesktopOld = new List<string>();
+
+                        //لیست فایل های جدید هم نام در دسکتاپ
+                        List<string> dsNewList = new List<string>();
+
+                        foreach (var ds in filesDesktop)
                         {
-                            string subDs = ds.Substring(countPathDesktop + 1, (ds.Length - (countPathDesktop + 1)));
-                            string subFs = fs.Substring(countPathFilesFolder + 1, (fs.Length - (countPathFilesFolder + 1)));
-                            string dsNew = ds.Substring(0, countPathDesktop);
-
-
-                            var filesSameInDesktop = filesFolder.Where(f => f.Contains(subDs)).ToList();
-                            string maxFilesSameInDesktop = "";
-                            if (filesSameInDesktop.Count > 1)
+                            filesDesktopOld.Add(ds);
+                            dsNewList.Add(ds);
+                            foreach (var fs in filesFolder)
                             {
-                                //پیدا کردن بزرگ ترین رشته هم نام
-                                for (int i = 0; i < filesSameInDesktop.Count; i++)
+                                string subDs = ds.Substring(countPathDesktop + 1, (ds.Length - (countPathDesktop + 1)));
+                                string subFs = fs.Substring(countPathFilesFolder + 1, (fs.Length - (countPathFilesFolder + 1)));
+                                string dsNew = ds.Substring(0, countPathDesktop);
+
+
+                                var filesSameInDesktop = filesFolder.Where(f => f.Contains(subDs)).ToList();
+                                string maxFilesSameInDesktop = "";
+                                if (filesSameInDesktop.Count > 1)
                                 {
-                                    maxFilesSameInDesktop = filesSameInDesktop[0];
-                                    if (filesSameInDesktop[i].Length > maxFilesSameInDesktop.Length)
+                                    //پیدا کردن بزرگ ترین رشته هم نام
+                                    for (int i = 0; i < filesSameInDesktop.Count; i++)
                                     {
-                                        maxFilesSameInDesktop = filesSameInDesktop[i];
+                                        maxFilesSameInDesktop = filesSameInDesktop[0];
+                                        if (filesSameInDesktop[i].Length > maxFilesSameInDesktop.Length)
+                                        {
+                                            maxFilesSameInDesktop = filesSameInDesktop[i];
+                                        }
+                                    }
+                                    if (maxFilesSameInDesktop != "")
+                                    {
+                                        maxFilesSameInDesktop = maxFilesSameInDesktop.
+                                        Substring(countPathFilesFolder + 1, (maxFilesSameInDesktop.Length - (countPathFilesFolder + 1)));
+                                    }
+
+                                    if (filesSameInDesktop.Count >= 1)
+                                    {
+                                        dsNew = dsNew + "\\" + "V_" + maxFilesSameInDesktop;
+                                        if (!File.Exists(dsNew))
+                                        {
+                                            File.Move(ds, dsNew);
+                                            dsNewList.Remove(ds);
+                                            dsNewList.Add(dsNew);
+                                        }
+                                        dsNew = ds.Substring(0, countPathDesktop);
+                                    }
+
+                                    if (filesSameInDesktop.Count >= 1)
+                                    {
+                                        var filesDesktopNew = Directory.GetFiles(pathDesktop).ToList();
+                                        foreach (var fde in filesDesktopNew)
+                                        {
+                                            string subFde = fde.Substring(countPathDesktop + 1, (fde.Length - (countPathDesktop + 1)));
+                                            if (subFde == subDs)
+                                            {
+                                                dsNew = dsNew + "\\" + "V_" + subFde;
+
+                                                File.Move(ds, dsNew);
+                                                dsNewList.Add(dsNew);
+                                            }
+                                        }
                                     }
                                 }
-                                if (maxFilesSameInDesktop != "")
+                                else
                                 {
-                                    maxFilesSameInDesktop = maxFilesSameInDesktop.
-                                    Substring(countPathFilesFolder + 1, (maxFilesSameInDesktop.Length - (countPathFilesFolder + 1)));
-                                }
 
-                                if (filesSameInDesktop.Count >= 1)
-                                {
-                                    dsNew = dsNew + "\\" + "V_" + maxFilesSameInDesktop;
-                                    if (!File.Exists(dsNew))
+                                    if (subDs == subFs)
                                     {
+                                        dsNew = dsNew + "\\" + "V_" + subDs;
                                         File.Move(ds, dsNew);
                                         dsNewList.Remove(ds);
                                         dsNewList.Add(dsNew);
                                     }
-                                    dsNew = ds.Substring(0, countPathDesktop);
-                                }
-
-                                if (filesSameInDesktop.Count >= 1)
-                                {
-                                    var filesDesktopNew = Directory.GetFiles(pathDesktop).ToList();
-                                    foreach (var fde in filesDesktopNew)
+                                    else
                                     {
-                                        string subFde = fde.Substring(countPathDesktop + 1, (fde.Length - (countPathDesktop + 1)));
-                                        if (subFde == subDs)
+                                        if (dsNewList.Any(a => a == subDs))
                                         {
-                                            dsNew = dsNew + "\\" + "V_" + subFde;
-
-                                            File.Move(ds, dsNew);
+                                            dsNew = dsNew + subDs;
                                             dsNewList.Add(dsNew);
                                         }
                                     }
                                 }
-                            }
-                            else
-                            {
 
-                                if (subDs == subFs)
-                                {
-                                    dsNew = dsNew + "\\" + "V_" + subDs;
-                                    File.Move(ds, dsNew);
-                                    dsNewList.Remove(ds);
-                                    dsNewList.Add(dsNew);
-                                }
-                                else
-                                {
-                                    if (dsNewList.Any(a => a == subDs))
-                                    {
-                                        dsNew = dsNew + subDs;
-                                        dsNewList.Add(dsNew);
-                                    }
-                                }
                             }
-
                         }
-                    }
 
-                    foreach (var list in dsNewList)
-                    {
-                        filesDesktop.Add(list);
-                    }
-
-                    if (dsNewList.Count != 0)
-                    {
-                        foreach (var list in filesDesktopOld)
+                        foreach (var list in dsNewList)
                         {
-                            filesDesktop.Remove(list);
+                            filesDesktop.Add(list);
+                        }
+
+                        if (dsNewList.Count != 0)
+                        {
+                            foreach (var list in filesDesktopOld)
+                            {
+                                filesDesktop.Remove(list);
+                            }
+                        }
+
+
+                        foreach (var item in filesDesktop)
+                        {
+                            File.Move(item,
+                                $"{pathDesktop}\\Files\\{item.Substring(countPathDesktop + 1, (item.Length - (countPathDesktop + 1)))}"
+                                );
+
+                            Console.WriteLine(item);
                         }
                     }
-
-
-                    foreach (var item in filesDesktop)
-                    {
-                        File.Move(item,
-                            $"C:\\Users\\USER\\Desktop\\Files\\{item.Substring(countPathDesktop + 1, (item.Length - (countPathDesktop + 1)))}");
-
-                        Console.WriteLine(item);
-                    }
+                    Thread.Sleep(7200000);
                 }
-                Thread.Sleep(7200000);
+
+              //  Console.ReadKey();
             }
 
-            Console.ReadKey();
-            //}
+            catch (Exception ex)
+            {
+                string path = @Path.Combine(Directory.GetCurrentDirectory(), "Error");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
 
-            //catch (Exception ex)
-            //{
-            //    string path = @Path.Combine(Directory.GetCurrentDirectory(), "Error");
-            //    if (!Directory.Exists(path))
-            //    {
-            //        Directory.CreateDirectory(path);
-            //    }
+                string pathError = @Path.Combine(Directory.GetCurrentDirectory(), "Error") + "\\Errors.txt";
+                int countError = 1;
+                while (true)
+                {
+                    if (File.Exists(pathError))
+                    {
+                        countError++;
+                        pathError = @Path.Combine(Directory.GetCurrentDirectory(), "Error") + $"\\Errors{countError}.txt";
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
 
-            //    string pathError = @Path.Combine(Directory.GetCurrentDirectory(), "Error") + "\\Errors.txt";
-            //    int countError = 1;
-            //    while (true)
-            //    {
-            //        if (File.Exists(pathError))
-            //        {
-            //            countError++;
-            //            pathError = @Path.Combine(Directory.GetCurrentDirectory(), "Error") + $"\\Errors{countError}.txt";
-            //        }
-            //        else
-            //        {
-            //            break;
-            //        }
-            //    }
+                using (FileStream fs = File.Create(pathError))
+                {
+                    string createDate = DateTime.Now.ToString();
+                    string messageError = createDate + "\n\n\n" + ex.Message.ToString() ?? "" + "\n\n\n" +
+                        ex.InnerException.ToString() ?? "" + "\n\n\n" +
+                        ex.InnerException.Message.ToString() ?? "";
+                    Console.WriteLine(messageError);
 
-            //    using (FileStream fs = File.Create(pathError))
-            //    {
-            //        string createDate = DateTime.Now.ToString();
-            //        string messageError = createDate + "\n\n\n" + ex.Message.ToString() ?? "" + "\n\n\n" +
-            //            ex.InnerException.ToString() ?? "" + "\n\n\n" +
-            //            ex.InnerException.Message.ToString() ?? "";
-            //        Console.WriteLine(messageError);
+                    Byte[] info = new UTF8Encoding(true).GetBytes(messageError);
 
-            //        Byte[] info = new UTF8Encoding(true).GetBytes(messageError);
-
-            //        fs.Write(info, 0, info.Length);
-            //    }
-            //    Console.ReadKey();
-            //}
+                    fs.Write(info, 0, info.Length);
+                }
+                Console.ReadKey();
+            }
 
         }
     }
