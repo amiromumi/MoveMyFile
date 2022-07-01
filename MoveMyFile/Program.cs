@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,26 +14,37 @@ namespace MoveMyFile
         static void Main(string[] args)
         {
             string userNameWindows = Environment.UserName;
-
+                    
             try
             {
                 while (true)
                 {
                     string pathDesktop = "C:\\Users\\" + userNameWindows + "\\" + "Desktop";
+                    string pathDesktopByFolderFiles = pathDesktop + "\\" + "Files";
+
+                    string pathFileOrganizerByTypeInRoot = @Path.Combine(Directory.GetCurrentDirectory()) + "\\File_Organizer_By_Type.bat";
+                    string pathFileOrganizerByTypeInFilesFolderDesktop = pathDesktopByFolderFiles + "\\File_Organizer_By_Type.bat";
+
+
                     int countPathDesktop = pathDesktop.Length;
                     List<string> filesDesktop = Directory.GetFiles(pathDesktop).ToList();
                     List<string> filesFolder;
-                    int countPathFilesFolder = (pathDesktop + "\\" + "Files").Length;
+                    int countPathFilesFolder = (pathDesktopByFolderFiles).Length;
 
-                    if (Directory.Exists(pathDesktop + "\\" + "Files"))
+                    if (Directory.Exists(pathDesktopByFolderFiles))
                     {
-                        filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
+                        if (!File.Exists(pathFileOrganizerByTypeInFilesFolderDesktop))
+                        {
+                            File.Copy(@pathFileOrganizerByTypeInRoot, @pathDesktopByFolderFiles + "\\File_Organizer_By_Type.bat");
+                        }
+                        filesFolder = Directory.GetFiles(pathDesktopByFolderFiles).ToList();
                         MoveFiles();
                     }
                     else
                     {
-                        Directory.CreateDirectory(pathDesktop + "\\" + "Files");
-                        filesFolder = Directory.GetFiles(pathDesktop + "\\" + "Files").ToList();
+                        Directory.CreateDirectory(pathDesktopByFolderFiles);
+                        File.Copy(@pathFileOrganizerByTypeInRoot, @pathDesktopByFolderFiles + "\\File_Organizer_By_Type.bat");
+                        filesFolder = Directory.GetFiles(pathDesktopByFolderFiles).ToList();
                         MoveFiles();
                     }
 
@@ -147,10 +159,25 @@ namespace MoveMyFile
                             Console.WriteLine(item);
                         }
                     }
+
+                    void FileOrganizerByType()
+                    {
+                        Process proc = null;
+                        string batDir = pathDesktopByFolderFiles;
+                        proc = new Process();
+                        proc.StartInfo.WorkingDirectory = batDir;
+                        proc.StartInfo.FileName = "File_Organizer_By_Type.bat";
+                        proc.StartInfo.CreateNoWindow = false;
+                        proc.Start();
+                        proc.WaitForExit();
+                        Console.WriteLine("Bat file executed !!");
+                    }   
+                    
                     Thread.Sleep(7200000);
+                    FileOrganizerByType();
                 }
 
-              //  Console.ReadKey();
+                Console.ReadKey();
             }
 
             catch (Exception ex)
