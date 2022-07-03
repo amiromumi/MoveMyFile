@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -13,13 +14,33 @@ namespace MoveMyFile
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Start..." + "\n");
+
+            #region Read_JSON
+
+            string pathFileJson = File.ReadAllText(@".\AppConfig.json");
+
+            JasonRead response = JsonConvert.DeserializeObject<JasonRead>(pathFileJson);
+
+
+            #endregion
+
+            //بدست آوردن نام کاربری ویندوز
             string userNameWindows = Environment.UserName;
-                    
+
+            string pathDesktop = "C:\\Users\\" + userNameWindows + "\\" + "Desktop";
+
+            //درصورتی که نام کاربری ونیدوز اشتباه بود از این راه بدست آور
+            if (userNameWindows == "SYSTEM")
+            {
+                pathDesktop = response.pathConnection;
+
+            }
+
             try
             {
                 while (true)
                 {
-                    string pathDesktop = "C:\\Users\\" + userNameWindows + "\\" + "Desktop";
                     string pathDesktopByFolderFiles = pathDesktop + "\\" + "Files";
 
                     string pathFileOrganizerByTypeInRoot = @Path.Combine(Directory.GetCurrentDirectory()) + "\\File_Organizer_By_Type.bat";
@@ -171,8 +192,8 @@ namespace MoveMyFile
                         proc.Start();
                         proc.WaitForExit();
                         Console.WriteLine("Bat file executed !!");
-                    }   
-                    
+                    }
+
                     Thread.Sleep(7200000);
                     FileOrganizerByType();
                 }
