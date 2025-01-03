@@ -1,5 +1,7 @@
 {
-  "pathConnection": [ "C:\\Users\\amirm\\OneDrive\\Desktop" ],
+  "pathConnection": [
+    "C:\\Users\\amirm\\OneDrive\\Desktop"
+  ],
   "IsFileOrganizerByType": false,
   "AppSleep": 7200000
 }

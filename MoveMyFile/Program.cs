@@ -14,7 +14,9 @@ namespace MoveMyFile
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Start..." + "\n");
+            Console.WriteLine("Start..." + "Omumi Move File" + "\n");
+            Console.WriteLine("Developer: " + "Amirmohammad Omumi" + "\n");
+            Console.WriteLine("Email: " + "amirmohammad.omumi@gmail.com" + "\n");
 
             try
             {
