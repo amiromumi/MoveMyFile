@@ -8,6 +8,8 @@ namespace MoveMyFile
 {
     public class JasonRead
     {
-        public string pathConnection;
+        public List<string> pathConnection { get; set; }
+        public bool IsFileOrganizerByType { get; set; }
+        public int AppSleep { get; set; }
     }
 }

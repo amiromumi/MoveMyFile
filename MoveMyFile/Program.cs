@@ -193,23 +193,30 @@ namespace MoveMyFile
                         }
 
                         //متد مرتب سازی فایل در پوشه ها بر اساس نوع فایل
-                        void FileOrganizerByType()
+                        void FileOrganizerByType(bool IsActive)
                         {
-                            Process proc = null;
-                            string batDir = pathDesktopByFolderFiles;
-                            proc = new Process();
-                            proc.StartInfo.WorkingDirectory = batDir;
-                            proc.StartInfo.FileName = "File_Organizer_By_Type.bat";
-                            proc.StartInfo.CreateNoWindow = false;
-                            proc.Start();
-                            proc.WaitForExit();
-                            Console.WriteLine($"... Bat file executed For ({pathDesktop}) !! ...");
+                            if (IsActive)
+                            {
+                                Process proc = null;
+                                string batDir = pathDesktopByFolderFiles;
+                                proc = new Process();
+                                proc.StartInfo.WorkingDirectory = batDir;
+                                proc.StartInfo.FileName = "File_Organizer_By_Type.bat";
+                                proc.StartInfo.CreateNoWindow = false;
+                                proc.Start();
+                                proc.WaitForExit();
+                                Console.WriteLine($"... Bat file executed For ({pathDesktop}) !! ...");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"... No FileOrganizerByType ({pathDesktop}) !! ...");
+                            }
                         }
 
-                        FileOrganizerByType();
+                        FileOrganizerByType(response.IsFileOrganizerByType);
                         Console.WriteLine($"......... End Move Files {pathDesktop} ........." + "\n");
                     }
-                    Thread.Sleep(7200000);
+                    Thread.Sleep(response.AppSleep);
                 }
 
                 Console.ReadKey();

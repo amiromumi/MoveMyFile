@@ -1,3 +1,6 @@
 {
-  "pathConnection": "C:\\Users\\Amir\\Desktop"
+  "pathConnection": "C:\\Users\\Amir\\Desktop",
+  "IsFileOrganizerByType": "",
+  //MilliSecond
+  "AppSleep": 7200000
 }
