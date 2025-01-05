@@ -7,7 +7,7 @@
     <ProjectGuid>{7F05491D-51D8-437F-BEB7-4A02E6090183}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>MoveMyFile</RootNamespace>
-    <AssemblyName>MoveMyFile</AssemblyName>
+    <AssemblyName>Omumi_MoveMyFile</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
